@@ -63,7 +63,12 @@ class AddFoodViewController: UIViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeView))
+        let closeButtonImage = UIImage(systemName: "xmark")
+        let closeButton = UIButton(type: .system)
+        closeButton.setImage(closeButtonImage, for: .normal)
+        closeButton.tintColor = .systemOrange
+        closeButton.addTarget(self, action: #selector(closeView), for: .touchUpInside)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
         
         contentView.setTextFieldDelegates(self)
         
