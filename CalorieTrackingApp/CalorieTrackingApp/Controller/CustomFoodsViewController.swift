@@ -94,6 +94,7 @@ class CustomFoodsViewController: UIViewController, UITableViewDelegate, UITableV
         do {
             foods = try managedContext.fetch(fetchRequest)
             DispatchQueue.main.async {
+                self.contentView.updatePlaceholderVisibility(show: self.foods.isEmpty)
                 self.contentView.tableView.reloadData()
             }
         } catch let error as NSError {

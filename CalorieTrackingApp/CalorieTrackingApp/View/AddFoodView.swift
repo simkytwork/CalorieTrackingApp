@@ -186,7 +186,6 @@ class AddFoodView: UIView {
         view.layer.borderColor = UIColor.systemGray5.cgColor
         view.layer.borderWidth = 0.5
         view.backgroundColor = .white
-        view.clipsToBounds = true
         view.layer.masksToBounds = false
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.05
