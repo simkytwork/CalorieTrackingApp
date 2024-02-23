@@ -27,12 +27,14 @@ class MainTabBarController: UITabBarController {
         let diaryVC = DiaryViewController()
         diaryVC.tabBarItem = UITabBarItem(title: "Diary", image: UIImage(systemName: "book"), selectedImage: UIImage(systemName: "book"))
         
+        let diaryNavController = UINavigationController(rootViewController: diaryVC)
+        
         let foodsVC = FoodsViewController()
         foodsVC.tabBarItem = UITabBarItem(title: "Foods", image: UIImage(systemName: "fork.knife"), selectedImage: UIImage(systemName: "fork.knife"))
         
         let foodsNavController = UINavigationController(rootViewController: foodsVC)
         
-        self.viewControllers = [diaryVC, foodsNavController]
+        self.viewControllers = [diaryNavController, foodsNavController]
     }
     
     override func viewWillAppear(_ animated: Bool) {

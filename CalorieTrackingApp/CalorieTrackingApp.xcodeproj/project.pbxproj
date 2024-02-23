@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4512E83F2B85EF5400B9D900 /* FoodInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512E83E2B85EF5400B9D900 /* FoodInput.swift */; };
+		4512E8412B88E3E000B9D900 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512E8402B88E3E000B9D900 /* DiaryView.swift */; };
+		4512E8432B891B5A00B9D900 /* MealBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512E8422B891B5A00B9D900 /* MealBarView.swift */; };
 		4579AF362B7B72A800372142 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF352B7B72A800372142 /* AppDelegate.swift */; };
 		4579AF382B7B72A800372142 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF372B7B72A800372142 /* SceneDelegate.swift */; };
 		4579AF3A2B7B72A800372142 /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF392B7B72A800372142 /* DiaryViewController.swift */; };
@@ -48,6 +50,8 @@
 
 /* Begin PBXFileReference section */
 		4512E83E2B85EF5400B9D900 /* FoodInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodInput.swift; sourceTree = "<group>"; };
+		4512E8402B88E3E000B9D900 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
+		4512E8422B891B5A00B9D900 /* MealBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealBarView.swift; sourceTree = "<group>"; };
 		4579AF322B7B72A800372142 /* CalorieTrackingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalorieTrackingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4579AF352B7B72A800372142 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4579AF372B7B72A800372142 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -161,9 +165,9 @@
 		4579AF662B7B7AFD00372142 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				4579AF6B2B7B7F5C00372142 /* MainTabBarController.swift */,
 				4579AF392B7B72A800372142 /* DiaryViewController.swift */,
 				4579AF692B7B7EF400372142 /* FoodsViewController.swift */,
-				4579AF6B2B7B7F5C00372142 /* MainTabBarController.swift */,
 				4579AF752B7D21CB00372142 /* CustomFoodsViewController.swift */,
 				4579AF7E2B7E6CCD00372142 /* AddFoodViewController.swift */,
 			);
@@ -184,10 +188,12 @@
 		4579AF6E2B7CEE5800372142 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4579AF6F2B7CEE8900372142 /* TrackButtonView.swift */,
+				4512E8402B88E3E000B9D900 /* DiaryView.swift */,
+				4512E8422B891B5A00B9D900 /* MealBarView.swift */,
 				4579AF712B7D1D3C00372142 /* FoodsView.swift */,
 				4579AF732B7D21AC00372142 /* CustomFoodsView.swift */,
 				4579AF802B7E6E5F00372142 /* AddFoodView.swift */,
+				4579AF6F2B7CEE8900372142 /* TrackButtonView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -334,8 +340,10 @@
 				4579AF6C2B7B7F5C00372142 /* MainTabBarController.swift in Sources */,
 				4579AF722B7D1D3C00372142 /* FoodsView.swift in Sources */,
 				4579AF6A2B7B7EF400372142 /* FoodsViewController.swift in Sources */,
+				4512E8432B891B5A00B9D900 /* MealBarView.swift in Sources */,
 				4579AF702B7CEE8900372142 /* TrackButtonView.swift in Sources */,
 				4579AF382B7B72A800372142 /* SceneDelegate.swift in Sources */,
+				4512E8412B88E3E000B9D900 /* DiaryView.swift in Sources */,
 				4579AF7D2B7D25CC00372142 /* Food+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
