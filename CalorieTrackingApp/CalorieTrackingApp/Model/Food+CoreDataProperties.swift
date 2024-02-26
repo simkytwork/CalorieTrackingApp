@@ -46,6 +46,21 @@ extension Food {
     }
     @NSManaged public var size: Double
 
+    @NSManaged public var  foodentry: NSSet?
+}
+
+extension Food {
+    @objc(addFoodentryObject:)
+    @NSManaged public func addToFoodentry(_ value: FoodEntry)
+    
+    @objc(RemoveFoodentryObject:)
+    @NSManaged public func removeFromFoodentry(_ value: FoodEntry)
+    
+    @objc(addFoodentry:)
+    @NSManaged public func addToFoodentry(_ values: NSSet)
+    
+    @objc(removeFoodentry:)
+    @NSManaged public func removeFromFoodentry(_ values: NSSet)
 }
 
 extension Food : Identifiable {

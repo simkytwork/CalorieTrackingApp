@@ -8,14 +8,19 @@
 import UIKit
 
 class DiaryView: UIView {
+    private let dateBackgroundView = UIView()
     private let dateLabel = UILabel()
     private let leftButton = UIButton(type: .system)
     private let rightButton = UIButton(type: .system)
+    private let dayNameLabel = UILabel()
     var onDateLabelTapped: (() -> Void)?
     var onIncrementDateTapped: (() -> Void)?
     var onDecrementDateTapped: (() -> Void)?
     
+    private let nutritionSummaryView = NutritionSummaryView()
+    
     private var mealBars: [MealBarView] = []
+    var mealBarTapped: ((String) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,6 +28,7 @@ class DiaryView: UIView {
         setupDateLabelTap()
         setupButtonTargets()
         setupMealBars()
+        setupNutritionalInfo()
     }
 
     required init?(coder: NSCoder) {
@@ -31,15 +37,35 @@ class DiaryView: UIView {
         setupDateLabelTap()
         setupButtonTargets()
         setupMealBars()
+        setupNutritionalInfo()
     }
     
     private func setupDateLabel() {
+        dateBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        dateBackgroundView.backgroundColor = UIColor.white
+        addSubview(dateBackgroundView)
+        sendSubviewToBack(dateBackgroundView)
+        
+        NSLayoutConstraint.activate([
+            dateBackgroundView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            dateBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dateBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dateBackgroundView.heightAnchor.constraint(equalToConstant: 90)
+        ])
+        
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(dateLabel)
         dateLabel.textAlignment = .center
         dateLabel.textColor = .black
         dateLabel.font = UIFont.boldSystemFont(ofSize: 32)
         updateDateLabel(with: Date())
+        
+        dayNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayNameLabel.textAlignment = .center
+        dayNameLabel.textColor = .black
+        dayNameLabel.font = UIFont.systemFont(ofSize: 28)
+        addSubview(dayNameLabel)
+        updateDayNameLabel(with: Date())
         
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         leftButton.setImage(UIImage(systemName: "arrowtriangle.left.fill"), for: .normal)
@@ -60,6 +86,21 @@ class DiaryView: UIView {
             
             rightButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
             rightButton.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: 10),
+            
+            dayNameLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 5),
+            dayNameLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor),
+            dayNameLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -20)
+        ])
+    }
+    
+    private func setupNutritionalInfo() {
+        addSubview(nutritionSummaryView)
+        nutritionSummaryView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            nutritionSummaryView.topAnchor.constraint(equalTo: dayNameLabel.bottomAnchor),
+            nutritionSummaryView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            nutritionSummaryView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
     
@@ -77,11 +118,15 @@ class DiaryView: UIView {
             addSubview(mealBar)
             mealBars.append(mealBar)
             
+            mealBar.isUserInteractionEnabled = true
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(mealBarTapped(_:)))
+            mealBar.addGestureRecognizer(tapGesture)
+            
             let bottomConstraint: NSLayoutConstraint
             if index == 3 { // for the last one the spacing to the bottom of the screen needs to be larger
-                bottomConstraint = mealBar.bottomAnchor.constraint(equalTo: previousMealBarBottomAnchor, constant: -50)
+                bottomConstraint = mealBar.bottomAnchor.constraint(equalTo: previousMealBarBottomAnchor, constant: -30)
             } else {
-                bottomConstraint = mealBar.bottomAnchor.constraint(equalTo: previousMealBarBottomAnchor, constant: 10)
+                bottomConstraint = mealBar.bottomAnchor.constraint(equalTo: previousMealBarBottomAnchor, constant: 11)
             }
             
             NSLayoutConstraint.activate([
@@ -93,6 +138,11 @@ class DiaryView: UIView {
             
             previousMealBarBottomAnchor = mealBar.topAnchor
         }
+    }
+    
+    @objc private func mealBarTapped(_ sender: UITapGestureRecognizer) {
+        guard let mealBar = sender.view as? MealBarView, let mealName = mealBar.mealLabel.text else { return }
+        self.mealBarTapped?(mealName)
     }
     
     private func setupDateLabelTap() {
@@ -115,9 +165,32 @@ class DiaryView: UIView {
     }
     
     func updateDateLabel(with date: Date) {
+        let calendar = Calendar.current
+
+        let startOfToday = calendar.startOfDay(for: Date())
+        let startOfProvidedDate = calendar.startOfDay(for: date)
+        
+        let components = calendar.dateComponents([.day], from: startOfToday, to: startOfProvidedDate) // calculates the difference between the days
+        
+        switch components.day {
+        case 0:
+            dateLabel.text = "Today"
+        case 1:
+            dateLabel.text = "Tomorrow"
+        case -1:
+            dateLabel.text = "Yesterday"
+        default:
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM d"
+            dateLabel.text = dateFormatter.string(from: date)
+        }
+    }
+    
+    func updateDayNameLabel(with date: Date) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d"
-        dateLabel.text = dateFormatter.string(from: date)
+        dateFormatter.dateFormat = "EEEE"
+        let dayName = dateFormatter.string(from: date)
+        dayNameLabel.text = dayName
     }
     
     @objc private func dateLabelTapped() {

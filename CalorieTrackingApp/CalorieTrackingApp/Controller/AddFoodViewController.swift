@@ -40,8 +40,7 @@ class AddFoodViewController: UIViewController, UITextFieldDelegate {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.subviews.last!.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
 

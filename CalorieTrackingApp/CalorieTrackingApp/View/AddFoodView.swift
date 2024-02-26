@@ -40,11 +40,13 @@ class AddFoodView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupForm()
+        setupAddButton()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupForm()
+        setupAddButton()
     }
     
     private func setupForm() {
@@ -57,7 +59,8 @@ class AddFoodView: UIView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9)
+            stackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9),
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
         
         setupFirstForm()
@@ -67,8 +70,6 @@ class AddFoodView: UIView {
         setupThirdForm()
         initializeDropdownMenus()
         addSpacerView(ofHeight: 10)
-        setupAddButton()
-        addSpacerView(ofHeight: 3)
     }
     
     private func setupFirstForm() {
@@ -360,6 +361,14 @@ class AddFoodView: UIView {
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         stackView.addArrangedSubview(addButton)
+//
+//        addButton.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+//            addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+//            addButton.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: 100),
+//            addButton.heightAnchor.constraint(equalToConstant: 50)
+//        ])
     }
     
     func setTextFieldDelegates(_ delegate: UITextFieldDelegate) {

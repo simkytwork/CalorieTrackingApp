@@ -16,6 +16,15 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         self.title = "Diary"
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithTransparentBackground() // This makes the background transparent
+//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black] // Adjust text color as needed
+//        
+//        // Set the created appearance for large titles
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance // For scrolled or compact state
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
         setupContentView()
         configureViewActions()
@@ -44,6 +53,11 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         contentView.onDecrementDateTapped = { [weak self] in
             self?.decrementDate()
         }
+        
+        contentView.mealBarTapped = { [weak self] mealName in
+            guard let self = self else { return }
+            let newViewController = FoodsViewController()
+        }
     }
     
     @objc func presentDatePicker() {
@@ -56,6 +70,7 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         
         datePickerVC.dateSelected = { [weak self] selectedDate in
             self?.contentView.updateDateLabel(with: selectedDate)
+            self?.contentView.updateDayNameLabel(with: selectedDate)
             self?.selectedDate = selectedDate
             self?.dismiss(animated: true, completion: nil)
         }
@@ -71,6 +86,7 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         let currentDate = selectedDate
         let newDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
         contentView.updateDateLabel(with: newDate)
+        contentView.updateDayNameLabel(with: newDate)
         selectedDate = newDate
     }
 
@@ -78,6 +94,7 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         let currentDate = selectedDate
         let newDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         contentView.updateDateLabel(with: newDate)
+        contentView.updateDayNameLabel(with: newDate)
         selectedDate = newDate
     }
     
