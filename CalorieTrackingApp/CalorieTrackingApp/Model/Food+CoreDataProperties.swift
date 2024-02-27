@@ -42,7 +42,7 @@ extension Food {
     @NSManaged public var protein: Double
     @NSManaged public var serving: String?
     public var wrappedServing: String {
-        serving ?? "Unknown sercing"
+        serving ?? "Unknown serving"
     }
     @NSManaged public var size: Double
 

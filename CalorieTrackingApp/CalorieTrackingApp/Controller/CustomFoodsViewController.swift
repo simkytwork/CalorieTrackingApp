@@ -78,7 +78,7 @@ class CustomFoodsViewController: UIViewController, UITableViewDelegate, UITableV
             return UITableViewCell()
         }
         let food = isFiltering() ? filteredFoods[indexPath.row] : foods[indexPath.row]
-        cell.setupCell(with: food)
+        cell.setupCell(with: food, showActionButton: false)
         return cell
     }
     

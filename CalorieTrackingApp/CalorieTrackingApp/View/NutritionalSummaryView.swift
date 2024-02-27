@@ -109,7 +109,7 @@ class NutritionSummaryView: UIView {
         NSLayoutConstraint.activate([
             nutritionContainerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             nutritionContainerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            nutritionContainerView.heightAnchor.constraint(equalToConstant: 110),
+            nutritionContainerView.heightAnchor.constraint(equalToConstant: 120),
             
             summaryCircleView.centerYAnchor.constraint(equalTo: nutritionContainerView.centerYAnchor),
             summaryCircleView.leadingAnchor.constraint(equalTo: nutritionContainerView.leadingAnchor, constant: 45),

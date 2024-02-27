@@ -97,10 +97,15 @@ class FoodTableViewCell: UITableViewCell {
     let kcalImageView = UIImageView()
     let servingDetailsLabel = UILabel()
     let servingDetailImageView = UIImageView()
+    
+    private let actionButton = UIButton(type: .system)
+    private var actionButtonConstraints: [NSLayoutConstraint] = []
+    var onActionButtonPressed: (() -> Void)?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
+        setupActionButton()
         selectionStyle = .none
         backgroundColor = .clear
     }
@@ -174,6 +179,32 @@ class FoodTableViewCell: UITableViewCell {
         ])
     }
     
+    private func setupActionButton() {
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(actionButton)
+        
+        actionButton.isHidden = true
+        
+        actionButtonConstraints = [
+            actionButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -16),
+            actionButton.centerYAnchor.constraint(equalTo: stackView.centerYAnchor),
+            actionButton.widthAnchor.constraint(equalToConstant: 40),
+            actionButton.heightAnchor.constraint(equalToConstant: 40)
+        ]
+        
+        actionButton.frame.size = CGSize(width: 40, height: 40)
+        actionButton.backgroundColor = .systemOrange
+        actionButton.layer.cornerRadius = actionButton.frame.height / 2
+        actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        actionButton.tintColor = .white
+        
+        actionButton.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc func actionButtonPressed() {
+        onActionButtonPressed?()
+    }
+    
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         stackView.backgroundColor = highlighted ? UIColor.systemOrange : .white
@@ -183,7 +214,7 @@ class FoodTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func setupCell(with food: Food) {
+    func setupCell(with food: Food, showActionButton: Bool) {
         nameLabel.text = food.name
         nameLabel.font = .boldSystemFont(ofSize: 15)
         
@@ -197,5 +228,14 @@ class FoodTableViewCell: UITableViewCell {
 
         servingDetailsLabel.text = "1 \(servingText) (\(sizeText) \(perservingText))"
         servingDetailsLabel.font = .systemFont(ofSize: 13)
+        
+        actionButton.isHidden = !showActionButton
+        if showActionButton {
+            NSLayoutConstraint.activate(actionButtonConstraints)
+        } else {
+            NSLayoutConstraint.deactivate(actionButtonConstraints)
+        }
+        
+        contentView.layoutIfNeeded()
     }
 }

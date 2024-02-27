@@ -119,8 +119,9 @@ class DiaryView: UIView {
             mealBars.append(mealBar)
             
             mealBar.isUserInteractionEnabled = true
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(mealBarTapped(_:)))
-            mealBar.addGestureRecognizer(tapGesture)
+            mealBar.onMealBarTapped = { [weak self] in
+                self?.mealBarTapped(mealBar)
+            }
             
             let bottomConstraint: NSLayoutConstraint
             if index == 3 { // for the last one the spacing to the bottom of the screen needs to be larger
@@ -140,9 +141,9 @@ class DiaryView: UIView {
         }
     }
     
-    @objc private func mealBarTapped(_ sender: UITapGestureRecognizer) {
-        guard let mealBar = sender.view as? MealBarView, let mealName = mealBar.mealLabel.text else { return }
-        self.mealBarTapped?(mealName)
+    @objc private func mealBarTapped(_ mealBar: MealBarView) {
+        guard let mealName = mealBar.mealLabel.text else { return }
+            self.mealBarTapped?(mealName)
     }
     
     private func setupDateLabelTap() {
