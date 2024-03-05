@@ -6,12 +6,14 @@
         <attribute name="category" attributeType="String"/>
         <attribute name="fat" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isFromDatabase" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="kcal" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="perserving" attributeType="String"/>
         <attribute name="protein" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="serving" attributeType="String"/>
         <attribute name="size" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="wasDeleted" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="foodentry" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodEntry" inverseName="food" inverseEntity="FoodEntry"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

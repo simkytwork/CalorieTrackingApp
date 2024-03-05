@@ -105,15 +105,15 @@ class DiaryView: UIView {
     }
     
     private func setupMealBars() {
-        let meals = ["Breakfast", "Lunch", "Dinner", "Snacks"]
+        let meals = Constants.mealNames
         
         var previousMealBarBottomAnchor: NSLayoutYAxisAnchor = self.safeAreaLayoutGuide.bottomAnchor
         
         for (index, meal) in meals.enumerated().reversed() {
             let mealBar = MealBarView()
-            mealBar.mealLabel.text = meal
+            mealBar.updateMealLabel(with: meal)
             mealBar.updateImage(with: meal)
-            mealBar.kcalLabel.text = "0 kcal"
+            mealBar.updateKcalLabel(with: 0)
             mealBar.translatesAutoresizingMaskIntoConstraints = false
             addSubview(mealBar)
             mealBars.append(mealBar)
@@ -142,8 +142,15 @@ class DiaryView: UIView {
     }
     
     @objc private func mealBarTapped(_ mealBar: MealBarView) {
-        guard let mealName = mealBar.mealLabel.text else { return }
-            self.mealBarTapped?(mealName)
+        let mealName = mealBar.getMealLabelText()
+        self.mealBarTapped?(mealName)
+    }
+    
+    func updateKcalValue(forMealName mealName: String, withKcal kcal: Int) {
+        guard let index = Constants.mealNames.firstIndex(of: mealName), index < mealBars.count else { return }
+        
+        let mealBar = mealBars.reversed()[index]
+        mealBar.updateKcalLabel(with: kcal)
     }
     
     private func setupDateLabelTap() {
@@ -192,6 +199,10 @@ class DiaryView: UIView {
         dateFormatter.dateFormat = "EEEE"
         let dayName = dateFormatter.string(from: date)
         dayNameLabel.text = dayName
+    }
+    
+    func updateNutritionSummaryInfo(kcal: String, protein: String, carbs: String, fat: String) {
+        nutritionSummaryView.updateNutritionValues(kcal: kcal, protein: protein, carbs: carbs, fat: fat)
     }
     
     @objc private func dateLabelTapped() {

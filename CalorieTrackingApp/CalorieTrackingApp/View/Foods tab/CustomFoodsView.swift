@@ -8,10 +8,10 @@
 import UIKit
 
 class CustomFoodsView: UIView {
-    let placeholderBackgroundView = UIView()
-    let placeholderLabel = UILabel()
-    let placeholderImageView = UIImageView()
-    let tableView = UITableView()
+    private let placeholderBackgroundView = UIView()
+    private let placeholderLabel = UILabel()
+    private let placeholderImageView = UIImageView()
+    private let tableView = UITableView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,7 +30,8 @@ class CustomFoodsView: UIView {
         addSubview(tableView)
         
         tableView.separatorStyle = .none
-        tableView.rowHeight = 87
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 87
         tableView.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         
         NSLayoutConstraint.activate([
@@ -84,9 +85,29 @@ class CustomFoodsView: UIView {
     }
     
     func updatePlaceholderVisibility(show: Bool) {
-        placeholderLabel.isHidden = !show
-        placeholderImageView.isHidden = !show
-        placeholderBackgroundView.isHidden = !show
+        DispatchQueue.main.async {
+            self.placeholderLabel.isHidden = !show
+            self.placeholderImageView.isHidden = !show
+            self.placeholderBackgroundView.isHidden = !show
+        }
+    }
+    
+    func reloadTableViewData() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    func setTableViewDelegate(_ delegate: UITableViewDelegate) {
+        tableView.delegate = delegate
+    }
+
+    func setTableViewDataSource(_ dataSource: UITableViewDataSource) {
+        tableView.dataSource = dataSource
+    }
+
+    func registerTableViewCell(cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
+        tableView.register(cellClass, forCellReuseIdentifier: identifier)
     }
 }
 
@@ -156,7 +177,7 @@ class FoodTableViewCell: UITableViewCell {
             
             nameLabel.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 16),
-            nameLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -16),
+            nameLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -56),
             
             kcalLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5),
             kcalLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 16),
@@ -214,9 +235,11 @@ class FoodTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func setupCell(with food: Food, showActionButton: Bool) {
+    func setupLocalFoodCell(with food: Food, showActionButton: Bool) {
         nameLabel.text = food.name
         nameLabel.font = .boldSystemFont(ofSize: 15)
+        nameLabel.numberOfLines = 0
+        nameLabel.lineBreakMode = .byWordWrapping
         
         kcalLabel.text = String(format: "%.0f", food.kcal) + " kcal"
         kcalLabel.font = .systemFont(ofSize: 13)
@@ -225,6 +248,33 @@ class FoodTableViewCell: UITableViewCell {
         let perservingText = food.perserving ?? "Unknown"
 
         let sizeText = String(format: "%.0f", food.size)
+
+        servingDetailsLabel.text = "1 \(servingText) (\(sizeText) \(perservingText))"
+        servingDetailsLabel.font = .systemFont(ofSize: 13)
+        
+        actionButton.isHidden = !showActionButton
+        if showActionButton {
+            NSLayoutConstraint.activate(actionButtonConstraints)
+        } else {
+            NSLayoutConstraint.deactivate(actionButtonConstraints)
+        }
+        
+        contentView.layoutIfNeeded()
+    }
+    
+    func setupEdamamFoodCell(with food: EdamamItem, showActionButton: Bool) {
+        nameLabel.text = food.label
+        nameLabel.font = .boldSystemFont(ofSize: 15)
+        nameLabel.numberOfLines = 0
+        nameLabel.lineBreakMode = .byWordWrapping
+        
+        kcalLabel.text = String(format: "%.0f", food.nutrients.ENERC_KCAL) + " kcal"
+        kcalLabel.font = .systemFont(ofSize: 13)
+        
+        let servingText = "Standard serving"
+        let perservingText = "g"
+
+        let sizeText = "100"
 
         servingDetailsLabel.text = "1 \(servingText) (\(sizeText) \(perservingText))"
         servingDetailsLabel.font = .systemFont(ofSize: 13)

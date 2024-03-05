@@ -8,13 +8,13 @@
 import UIKit
 
 class MealView: UIView {
-    private let nutritionSummaryView = NutritionSummaryView()
+    let nutritionSummaryView = NutritionSummaryView()
     
     private let placeholderBackgroundView = UIView()
     private let placeholderLabel = UILabel()
     private let placeholderImageView = UIImageView()
     
-    let tableView = UITableView()
+    private let tableView = UITableView()
     private var tableViewTopConstraint: NSLayoutConstraint?
     
     override init(frame: CGRect) {
@@ -37,7 +37,8 @@ class MealView: UIView {
         
         backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 87
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 87
         tableView.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: topAnchor)
         
@@ -124,5 +125,31 @@ class MealView: UIView {
     
     func updateNutritionalInfoVisibility(show: Bool) {
         nutritionSummaryView.isHidden = !show
+    }
+    
+    func updateNutritionSummaryInfo(kcal: String, protein: String, carbs: String, fat: String) {
+        nutritionSummaryView.updateNutritionValues(kcal: kcal, protein: protein, carbs: carbs, fat: fat)
+    }
+    
+    func reloadTableViewData() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    func setTableViewDelegate(_ delegate: UITableViewDelegate) {
+        tableView.delegate = delegate
+    }
+
+    func setTableViewDataSource(_ dataSource: UITableViewDataSource) {
+        tableView.dataSource = dataSource
+    }
+
+    func registerTableViewCell(cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
+        tableView.register(cellClass, forCellReuseIdentifier: identifier)
+    }
+    
+    func showTableView(_ show: Bool) {
+        tableView.isHidden = show
     }
 }

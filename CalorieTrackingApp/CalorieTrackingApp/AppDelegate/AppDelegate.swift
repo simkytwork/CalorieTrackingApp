@@ -65,6 +65,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         tabBarAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         UITabBar.appearance().standardAppearance = tabBarAppearance
+        
+        deleteMarkedFood()
+        deleteUnlinkedDatabaseFood()
+        
         return true
     }
 
@@ -82,6 +86,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    func deleteMarkedFood() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext = appDelegate.persistentContainer.viewContext
 
+        let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "wasDeleted == TRUE AND foodentry.@count == 0")
+
+        do {
+            let foodsToDelete = try managedContext.fetch(fetchRequest)
+            for food in foodsToDelete {
+                managedContext.delete(food)
+            }
+            
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Error fetching or deleting foods: \(error), \(error.userInfo)")
+        }
+    }
+
+    func deleteUnlinkedDatabaseFood() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isFromDatabase == TRUE AND foodentry.@count == 0")
+
+        do {
+            let foodsToDelete = try managedContext.fetch(fetchRequest)
+            for food in foodsToDelete {
+                managedContext.delete(food)
+            }
+            
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Error fetching or deleting foods: \(error), \(error.userInfo)")
+        }
+    }
 }
 

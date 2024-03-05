@@ -10,9 +10,10 @@ import UIKit
 class MealBarView: UIView {
     private let mealBarView = UIView()
     private let labelsContainerView = UIView()
-    let mealLabel = UILabel()
+    private let mealLabel = UILabel()
     private let imageView = UIImageView()
-    let kcalLabel = UILabel()
+    private let kcalValueLabel = UILabel()
+    private let kcalDetailLabel = UILabel()
     var onMealBarTapped: (() -> Void)?
 
     override init(frame: CGRect) {
@@ -45,10 +46,15 @@ class MealBarView: UIView {
         mealLabel.translatesAutoresizingMaskIntoConstraints = false
         labelsContainerView.addSubview(mealLabel)
 
-        kcalLabel.text = ""
-        kcalLabel.font = .systemFont(ofSize: 13)
-        kcalLabel.translatesAutoresizingMaskIntoConstraints = false
-        labelsContainerView.addSubview(kcalLabel)
+        kcalValueLabel.text = ""
+        kcalValueLabel.font = .boldSystemFont(ofSize: 13)
+        kcalValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        labelsContainerView.addSubview(kcalValueLabel)
+        
+        kcalDetailLabel.text = "kcal"
+        kcalDetailLabel.font = .systemFont(ofSize: 13)
+        kcalDetailLabel.translatesAutoresizingMaskIntoConstraints = false
+        labelsContainerView.addSubview(kcalDetailLabel)
 
         NSLayoutConstraint.activate([
             mealBarView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -62,15 +68,24 @@ class MealBarView: UIView {
             
             labelsContainerView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor),
             labelsContainerView.centerYAnchor.constraint(equalTo: mealBarView.centerYAnchor),
-            labelsContainerView.trailingAnchor.constraint(lessThanOrEqualTo: kcalLabel.leadingAnchor, constant: -20),
+            labelsContainerView.trailingAnchor.constraint(lessThanOrEqualTo: kcalValueLabel.leadingAnchor, constant: -20),
             
             mealLabel.topAnchor.constraint(equalTo: labelsContainerView.topAnchor),
             mealLabel.leadingAnchor.constraint(equalTo: labelsContainerView.leadingAnchor, constant: 20),
             mealLabel.bottomAnchor.constraint(equalTo: labelsContainerView.bottomAnchor),
             
-            kcalLabel.trailingAnchor.constraint(equalTo: mealBarView.trailingAnchor, constant: -26),
-            kcalLabel.centerYAnchor.constraint(equalTo: mealBarView.centerYAnchor)
+            kcalValueLabel.trailingAnchor.constraint(equalTo: kcalDetailLabel.leadingAnchor, constant: -3),
+            kcalValueLabel.bottomAnchor.constraint(equalTo: mealBarView.bottomAnchor, constant: -13),
+            
+            kcalDetailLabel.trailingAnchor.constraint(equalTo: mealBarView.trailingAnchor, constant: -26),
+            kcalDetailLabel.bottomAnchor.constraint(equalTo: mealBarView.bottomAnchor, constant: -13)
         ])
+    }
+    
+    func updateMealLabel(with text: String) {
+        DispatchQueue.main.async {
+            self.mealLabel.text = text
+        }
     }
     
     func updateImage(with imageName: String) {
@@ -80,8 +95,12 @@ class MealBarView: UIView {
     
     func updateKcalLabel(with count: Int) {
         DispatchQueue.main.async {
-            self.kcalLabel.text = "\(count)"
+            self.kcalValueLabel.text = "\(count)"
         }
+    }
+    
+    func getMealLabelText() -> String {
+        return mealLabel.text ?? ""
     }
     
     func setupGestureRecognizers() {

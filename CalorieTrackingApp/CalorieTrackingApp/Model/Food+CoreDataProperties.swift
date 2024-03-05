@@ -46,14 +46,23 @@ extension Food {
     }
     @NSManaged public var size: Double
 
-    @NSManaged public var  foodentry: NSSet?
+    @NSManaged public var wasDeleted: Bool
+    @NSManaged public var isFromDatabase: Bool
+    
+    @NSManaged public var foodentry: NSSet?
+    public var foodEntryArray: [FoodEntry] {
+        let set = foodentry as? Set<FoodEntry> ?? []
+        return set.sorted {
+            $0.id < $1.id
+        }
+    }
 }
 
 extension Food {
     @objc(addFoodentryObject:)
     @NSManaged public func addToFoodentry(_ value: FoodEntry)
     
-    @objc(RemoveFoodentryObject:)
+    @objc(removeFoodentryObject:)
     @NSManaged public func removeFromFoodentry(_ value: FoodEntry)
     
     @objc(addFoodentry:)

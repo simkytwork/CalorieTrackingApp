@@ -53,6 +53,7 @@ class FoodsViewController: UIViewController {
         }
         
         let fetchRequest = NSFetchRequest<Food>(entityName: "Food")
+        fetchRequest.predicate = NSPredicate(format: "wasDeleted == FALSE AND isFromDatabase == FALSE")
         
         do {
             let count = try context.count(for: fetchRequest)

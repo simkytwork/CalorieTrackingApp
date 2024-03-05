@@ -196,6 +196,9 @@ class AddFoodViewController: UIViewController, UITextFieldDelegate {
         food.carbs = getValuePer(input: input.carbs, size: input.serving)
         food.fat = getValuePer(input: input.fat, size: input.serving)
         
+        food.wasDeleted = false
+        food.isFromDatabase = false
+        
         do {
             try context.save()
         } catch {

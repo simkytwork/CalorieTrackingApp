@@ -68,7 +68,7 @@ class NutritionSummaryView: UIView {
             kcalValueLabel.topAnchor.constraint(equalTo: kcalLabelsContainerView.topAnchor),
             kcalValueLabel.centerXAnchor.constraint(equalTo: kcalLabelsContainerView.centerXAnchor),
 
-            kcalDetailLabel.topAnchor.constraint(equalTo: kcalValueLabel.bottomAnchor, constant: 4),
+            kcalDetailLabel.topAnchor.constraint(equalTo: kcalValueLabel.bottomAnchor, constant: 2),
             kcalDetailLabel.centerXAnchor.constraint(equalTo: kcalLabelsContainerView.centerXAnchor),
             kcalDetailLabel.bottomAnchor.constraint(equalTo: kcalLabelsContainerView.bottomAnchor),
         ])
@@ -81,7 +81,7 @@ class NutritionSummaryView: UIView {
         proteinLabel.textColor = .systemGreen
         proteinValueLabel.text = "(0%) - 0g"
         proteinValueLabel.translatesAutoresizingMaskIntoConstraints = false
-        proteinValueLabel.font = .boldSystemFont(ofSize: 13)
+        proteinValueLabel.font = .boldSystemFont(ofSize: 12)
         
         carbsLabel.translatesAutoresizingMaskIntoConstraints = false
         carbsLabel.text = "Carbs "
@@ -89,7 +89,7 @@ class NutritionSummaryView: UIView {
         carbsLabel.textColor = .systemBlue
         carbsValueLabel.text = "(0%) - 0g"
         carbsValueLabel.translatesAutoresizingMaskIntoConstraints = false
-        carbsValueLabel.font = .boldSystemFont(ofSize: 13)
+        carbsValueLabel.font = .boldSystemFont(ofSize: 12)
         
         fatLabel.translatesAutoresizingMaskIntoConstraints = false
         fatLabel.text = "Fat "
@@ -97,7 +97,7 @@ class NutritionSummaryView: UIView {
         fatLabel.textColor = .systemRed
         fatValueLabel.text = "(0%) - 0g"
         fatValueLabel.translatesAutoresizingMaskIntoConstraints = false
-        fatValueLabel.font = .boldSystemFont(ofSize: 13)
+        fatValueLabel.font = .boldSystemFont(ofSize: 12)
         
         nutritionContainerView.addSubview(proteinLabel)
         nutritionContainerView.addSubview(proteinValueLabel)
@@ -137,9 +137,11 @@ class NutritionSummaryView: UIView {
     }
     
     func updateNutritionValues(kcal: String, protein: String, carbs: String, fat: String) {
-        kcalValueLabel.text = kcal
-        proteinValueLabel.text = protein
-        carbsValueLabel.text = carbs
-        fatValueLabel.text = fat
+        DispatchQueue.main.async {
+            self.kcalValueLabel.text = kcal
+            self.proteinValueLabel.text = protein
+            self.carbsValueLabel.text = carbs
+            self.fatValueLabel.text = fat
+        }
     }
 }

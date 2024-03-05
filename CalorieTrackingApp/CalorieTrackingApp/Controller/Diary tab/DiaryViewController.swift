@@ -11,24 +11,38 @@ import CoreData
 class DiaryViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     let contentView = DiaryView()
     let datePickerVC = DatePickerViewController()
-    private var selectedDate = Date()
+    private var selectedDate = Date() {
+        didSet {
+            fetchAllMealsInfo()
+        }
+    }
+    
+    private var kcal = 0.0
+    private var protein = 0.0
+    private var carbs = 0.0
+    private var fat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         self.title = "Diary"
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithTransparentBackground() // This makes the background transparent
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black] // Adjust text color as needed
-//        
-//        // Set the created appearance for large titles
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.compactAppearance = appearance // For scrolled or compact state
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        
+        let rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle"), style: .plain, target: self, action: #selector(accountButtonTapped))
+        self.navigationItem.rightBarButtonItem = rightBarButtonItem
+        self.navigationItem.rightBarButtonItem?.tintColor = .systemOrange
+        self.navigationController?.navigationBar.tintColor = .systemOrange
         
         setupContentView()
+        fetchAllMealsInfo()
         configureViewActions()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let tabBar = self.tabBarController as? MainTabBarController {
+            tabBar.trackButtonView.isHidden = false
+        }
+        fetchAllMealsInfo()
     }
     
     private func setupContentView() {
@@ -62,6 +76,16 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         }
     }
     
+    @objc func accountButtonTapped() {
+        let loginVC = LoginViewController()
+        loginVC.hidesBottomBarWhenPushed = true
+        if let tabBar = self.tabBarController as? MainTabBarController {
+            tabBar.trackButtonView.isHidden = true
+        }
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        self.navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
     private func fetchOrCreateMeal(name mealName: String, date: Date) -> Meal? {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedContext = appDelegate.persistentContainer.viewContext
@@ -90,6 +114,46 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
             print("Could not fetch or create a new meal: \(error), \(error.userInfo)")
             return nil
         }
+    }
+    
+    private func fetchAllMealsInfo() {
+        let mealTypes = Constants.mealNames
+        
+        kcal = 0.0
+        protein = 0.0
+        carbs = 0.0
+        fat = 0.0
+        
+        mealTypes.forEach { mealType in
+            if let meal = fetchOrCreateMeal(name: mealType, date: selectedDate) {
+                kcal += meal.kcal
+                protein += meal.protein
+                carbs += meal.carbs
+                fat += meal.fat
+                
+                self.contentView.updateKcalValue(forMealName: mealType, withKcal: Int(meal.kcal))
+            }
+        }
+        
+        self.updateNutritionSummaryInfo()
+    }
+    
+    func updateNutritionSummaryInfo() {
+        let totalWeight = protein + carbs + fat
+        let proteinPercentage = totalWeight > 0 ? (protein / totalWeight) * 100 : 0
+        let carbsPercentage = totalWeight > 0 ? (carbs / totalWeight) * 100 : 0
+        let fatPercentage = totalWeight > 0 ? (fat / totalWeight) * 100 : 0
+        
+        let proteinValue = "(\(String(format: "%.1f", proteinPercentage))%) - \(String(format: "%.1f", protein))g"
+        let carbsValue = "(\(String(format: "%.1f", carbsPercentage))%) - \(String(format: "%.1f", carbs))g"
+        let fatValue = "(\(String(format: "%.1f", fatPercentage))%) - \(String(format: "%.1f", fat))g"
+        
+        contentView.updateNutritionSummaryInfo(
+            kcal: String(format: "%.0f", kcal),
+            protein: proteinValue,
+            carbs: carbsValue,
+            fat: fatValue
+        )
     }
     
     @objc func presentDatePicker() {
@@ -132,41 +196,6 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
     
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
-    }
-}
-
-class DatePickerViewController: UIViewController {
-    private var datePicker = UIDatePicker()
-    var dateSelected: ((Date) -> Void)?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupDatePicker()
-    }
-
-    private func setupDatePicker() {
-        datePicker.preferredDatePickerStyle = .inline
-        datePicker.datePickerMode = .date
-        datePicker.tintColor = .systemOrange
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(datePicker)
-
-        NSLayoutConstraint.activate([
-            datePicker.topAnchor.constraint(equalTo: view.topAnchor),
-            datePicker.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
-        
-        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-    }
-
-    @objc private func dateChanged(_ sender: UIDatePicker) {
-        dateSelected?(sender.date)
-    }
-    
-    func updateDatePickerDate(with newDate: Date) {
-        self.datePicker.date = newDate
     }
 }
 

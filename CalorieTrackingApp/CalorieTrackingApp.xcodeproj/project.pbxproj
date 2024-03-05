@@ -36,6 +36,12 @@
 		4579AF7D2B7D25CC00372142 /* Food+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF7B2B7D25CC00372142 /* Food+CoreDataProperties.swift */; };
 		4579AF7F2B7E6CCD00372142 /* AddFoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF7E2B7E6CCD00372142 /* AddFoodViewController.swift */; };
 		4579AF812B7E6E5F00372142 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4579AF802B7E6E5F00372142 /* AddFoodView.swift */; };
+		45DEB69C2B95EBBE009B24A1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB69B2B95EBBE009B24A1 /* Constants.swift */; };
+		45DEB69E2B960BC7009B24A1 /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB69D2B960BC7009B24A1 /* DatePickerViewController.swift */; };
+		45DEB6A42B971BEF009B24A1 /* EdamamFood.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */; };
+		45DEB6A62B971D9E009B24A1 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */; };
+		45DEB6A82B978765009B24A1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A72B978765009B24A1 /* LoginViewController.swift */; };
+		45DEB6AA2B978AAB009B24A1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A92B978AAB009B24A1 /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +95,12 @@
 		4579AF7B2B7D25CC00372142 /* Food+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4579AF7E2B7E6CCD00372142 /* AddFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodViewController.swift; sourceTree = "<group>"; };
 		4579AF802B7E6E5F00372142 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
+		45DEB69B2B95EBBE009B24A1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		45DEB69D2B960BC7009B24A1 /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
+		45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdamamFood.swift; sourceTree = "<group>"; };
+		45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		45DEB6A72B978765009B24A1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		45DEB6A92B978AAB009B24A1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +151,7 @@
 		4579AF342B7B72A800372142 /* CalorieTrackingApp */ = {
 			isa = PBXGroup;
 			children = (
+				45DEB69A2B95EBB1009B24A1 /* Utilities */,
 				4579AF6D2B7CEE5300372142 /* Model */,
 				4579AF6E2B7CEE5800372142 /* View */,
 				4579AF662B7B7AFD00372142 /* Controller */,
@@ -179,12 +192,10 @@
 		4579AF662B7B7AFD00372142 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				45DEB6A02B960BFB009B24A1 /* Foods tab */,
+				45DEB69F2B960BE4009B24A1 /* Diary tab */,
 				4579AF6B2B7B7F5C00372142 /* MainTabBarController.swift */,
-				4579AF392B7B72A800372142 /* DiaryViewController.swift */,
-				4579AF692B7B7EF400372142 /* FoodsViewController.swift */,
-				4579AF752B7D21CB00372142 /* CustomFoodsViewController.swift */,
-				4579AF7E2B7E6CCD00372142 /* AddFoodViewController.swift */,
-				4512E8462B8CE54E00B9D900 /* MealViewController.swift */,
+				45DEB6A72B978765009B24A1 /* LoginViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -200,6 +211,7 @@
 				4579AF7B2B7D25CC00372142 /* Food+CoreDataProperties.swift */,
 				4579AF772B7D221C00372142 /* CalorieTrackingApp.xcdatamodeld */,
 				4512E83E2B85EF5400B9D900 /* FoodInput.swift */,
+				45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -207,16 +219,62 @@
 		4579AF6E2B7CEE5800372142 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				45DEB6A22B960C23009B24A1 /* Foods tab */,
+				45DEB6A12B960C0D009B24A1 /* Diary tab */,
+				4579AF6F2B7CEE8900372142 /* TrackButtonView.swift */,
+				45DEB6A92B978AAB009B24A1 /* LoginView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		45DEB69A2B95EBB1009B24A1 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				45DEB69B2B95EBBE009B24A1 /* Constants.swift */,
+				45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		45DEB69F2B960BE4009B24A1 /* Diary tab */ = {
+			isa = PBXGroup;
+			children = (
+				4579AF392B7B72A800372142 /* DiaryViewController.swift */,
+				45DEB69D2B960BC7009B24A1 /* DatePickerViewController.swift */,
+				4512E8462B8CE54E00B9D900 /* MealViewController.swift */,
+			);
+			path = "Diary tab";
+			sourceTree = "<group>";
+		};
+		45DEB6A02B960BFB009B24A1 /* Foods tab */ = {
+			isa = PBXGroup;
+			children = (
+				4579AF692B7B7EF400372142 /* FoodsViewController.swift */,
+				4579AF752B7D21CB00372142 /* CustomFoodsViewController.swift */,
+				4579AF7E2B7E6CCD00372142 /* AddFoodViewController.swift */,
+			);
+			path = "Foods tab";
+			sourceTree = "<group>";
+		};
+		45DEB6A12B960C0D009B24A1 /* Diary tab */ = {
+			isa = PBXGroup;
+			children = (
 				4512E8402B88E3E000B9D900 /* DiaryView.swift */,
 				4512E8502B8CF2F300B9D900 /* NutritionalSummaryView.swift */,
 				4512E8422B891B5A00B9D900 /* MealBarView.swift */,
+				4512E8442B8CE53D00B9D900 /* MealView.swift */,
+			);
+			path = "Diary tab";
+			sourceTree = "<group>";
+		};
+		45DEB6A22B960C23009B24A1 /* Foods tab */ = {
+			isa = PBXGroup;
+			children = (
 				4579AF712B7D1D3C00372142 /* FoodsView.swift */,
 				4579AF732B7D21AC00372142 /* CustomFoodsView.swift */,
 				4579AF802B7E6E5F00372142 /* AddFoodView.swift */,
-				4512E8442B8CE53D00B9D900 /* MealView.swift */,
-				4579AF6F2B7CEE8900372142 /* TrackButtonView.swift */,
 			);
-			path = View;
+			path = "Foods tab";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -349,9 +407,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DEB69C2B95EBBE009B24A1 /* Constants.swift in Sources */,
 				4579AF792B7D221C00372142 /* CalorieTrackingApp.xcdatamodeld in Sources */,
 				4512E8512B8CF2F300B9D900 /* NutritionalSummaryView.swift in Sources */,
 				4579AF3A2B7B72A800372142 /* DiaryViewController.swift in Sources */,
+				45DEB6A42B971BEF009B24A1 /* EdamamFood.swift in Sources */,
+				45DEB6A82B978765009B24A1 /* LoginViewController.swift in Sources */,
 				4512E83F2B85EF5400B9D900 /* FoodInput.swift in Sources */,
 				4579AF7C2B7D25CC00372142 /* Food+CoreDataClass.swift in Sources */,
 				4579AF762B7D21CB00372142 /* CustomFoodsViewController.swift in Sources */,
@@ -362,7 +423,9 @@
 				4512E8472B8CE54E00B9D900 /* MealViewController.swift in Sources */,
 				4579AF742B7D21AC00372142 /* CustomFoodsView.swift in Sources */,
 				4579AF812B7E6E5F00372142 /* AddFoodView.swift in Sources */,
+				45DEB69E2B960BC7009B24A1 /* DatePickerViewController.swift in Sources */,
 				4579AF362B7B72A800372142 /* AppDelegate.swift in Sources */,
+				45DEB6AA2B978AAB009B24A1 /* LoginView.swift in Sources */,
 				4512E84F2B8CE96200B9D900 /* Meal+CoreDataProperties.swift in Sources */,
 				4579AF6C2B7B7F5C00372142 /* MainTabBarController.swift in Sources */,
 				4512E84E2B8CE96200B9D900 /* Meal+CoreDataClass.swift in Sources */,
@@ -370,6 +433,7 @@
 				4579AF6A2B7B7EF400372142 /* FoodsViewController.swift in Sources */,
 				4512E8432B891B5A00B9D900 /* MealBarView.swift in Sources */,
 				4579AF702B7CEE8900372142 /* TrackButtonView.swift in Sources */,
+				45DEB6A62B971D9E009B24A1 /* NetworkManager.swift in Sources */,
 				4579AF382B7B72A800372142 /* SceneDelegate.swift in Sources */,
 				4512E8412B88E3E000B9D900 /* DiaryView.swift in Sources */,
 				4579AF7D2B7D25CC00372142 /* Food+CoreDataProperties.swift in Sources */,
