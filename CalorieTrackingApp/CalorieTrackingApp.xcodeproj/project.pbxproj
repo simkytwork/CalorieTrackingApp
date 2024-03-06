@@ -40,8 +40,13 @@
 		45DEB69E2B960BC7009B24A1 /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB69D2B960BC7009B24A1 /* DatePickerViewController.swift */; };
 		45DEB6A42B971BEF009B24A1 /* EdamamFood.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */; };
 		45DEB6A62B971D9E009B24A1 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */; };
-		45DEB6A82B978765009B24A1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A72B978765009B24A1 /* LoginViewController.swift */; };
-		45DEB6AA2B978AAB009B24A1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A92B978AAB009B24A1 /* LoginView.swift */; };
+		45DEB6A82B978765009B24A1 /* SigninViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A72B978765009B24A1 /* SigninViewController.swift */; };
+		45DEB6AA2B978AAB009B24A1 /* SigninView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6A92B978AAB009B24A1 /* SigninView.swift */; };
+		45DEB6AC2B9871D4009B24A1 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6AB2B9871D4009B24A1 /* SignupViewController.swift */; };
+		45DEB6AE2B9871E7009B24A1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6AD2B9871E7009B24A1 /* SignupView.swift */; };
+		45DEB6B02B987491009B24A1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6AF2B987491009B24A1 /* AuthManager.swift */; };
+		45DEB6B32B9882FE009B24A1 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 45DEB6B22B9882FE009B24A1 /* KeychainSwift */; };
+		45DEB6B62B988380009B24A1 /* APITokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DEB6B52B988380009B24A1 /* APITokenResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,8 +104,12 @@
 		45DEB69D2B960BC7009B24A1 /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
 		45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdamamFood.swift; sourceTree = "<group>"; };
 		45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		45DEB6A72B978765009B24A1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		45DEB6A92B978AAB009B24A1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		45DEB6A72B978765009B24A1 /* SigninViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninViewController.swift; sourceTree = "<group>"; };
+		45DEB6A92B978AAB009B24A1 /* SigninView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninView.swift; sourceTree = "<group>"; };
+		45DEB6AB2B9871D4009B24A1 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		45DEB6AD2B9871E7009B24A1 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		45DEB6AF2B987491009B24A1 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		45DEB6B52B988380009B24A1 /* APITokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITokenResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DEB6B32B9882FE009B24A1 /* KeychainSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,7 +205,8 @@
 				45DEB6A02B960BFB009B24A1 /* Foods tab */,
 				45DEB69F2B960BE4009B24A1 /* Diary tab */,
 				4579AF6B2B7B7F5C00372142 /* MainTabBarController.swift */,
-				45DEB6A72B978765009B24A1 /* LoginViewController.swift */,
+				45DEB6A72B978765009B24A1 /* SigninViewController.swift */,
+				45DEB6AB2B9871D4009B24A1 /* SignupViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -203,15 +214,10 @@
 		4579AF6D2B7CEE5300372142 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4512E8482B8CE96200B9D900 /* FoodEntry+CoreDataClass.swift */,
-				4512E8492B8CE96200B9D900 /* FoodEntry+CoreDataProperties.swift */,
-				4512E84A2B8CE96200B9D900 /* Meal+CoreDataClass.swift */,
-				4512E84B2B8CE96200B9D900 /* Meal+CoreDataProperties.swift */,
-				4579AF7A2B7D25CC00372142 /* Food+CoreDataClass.swift */,
-				4579AF7B2B7D25CC00372142 /* Food+CoreDataProperties.swift */,
-				4579AF772B7D221C00372142 /* CalorieTrackingApp.xcdatamodeld */,
+				45DEB6B42B988363009B24A1 /* CoreData */,
 				4512E83E2B85EF5400B9D900 /* FoodInput.swift */,
 				45DEB6A32B971BEF009B24A1 /* EdamamFood.swift */,
+				45DEB6B52B988380009B24A1 /* APITokenResponse.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -222,7 +228,8 @@
 				45DEB6A22B960C23009B24A1 /* Foods tab */,
 				45DEB6A12B960C0D009B24A1 /* Diary tab */,
 				4579AF6F2B7CEE8900372142 /* TrackButtonView.swift */,
-				45DEB6A92B978AAB009B24A1 /* LoginView.swift */,
+				45DEB6A92B978AAB009B24A1 /* SigninView.swift */,
+				45DEB6AD2B9871E7009B24A1 /* SignupView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -232,6 +239,7 @@
 			children = (
 				45DEB69B2B95EBBE009B24A1 /* Constants.swift */,
 				45DEB6A52B971D9E009B24A1 /* NetworkManager.swift */,
+				45DEB6AF2B987491009B24A1 /* AuthManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -277,6 +285,20 @@
 			path = "Foods tab";
 			sourceTree = "<group>";
 		};
+		45DEB6B42B988363009B24A1 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				4512E8482B8CE96200B9D900 /* FoodEntry+CoreDataClass.swift */,
+				4512E8492B8CE96200B9D900 /* FoodEntry+CoreDataProperties.swift */,
+				4512E84A2B8CE96200B9D900 /* Meal+CoreDataClass.swift */,
+				4512E84B2B8CE96200B9D900 /* Meal+CoreDataProperties.swift */,
+				4579AF7A2B7D25CC00372142 /* Food+CoreDataClass.swift */,
+				4579AF7B2B7D25CC00372142 /* Food+CoreDataProperties.swift */,
+				4579AF772B7D221C00372142 /* CalorieTrackingApp.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -293,6 +315,9 @@
 			dependencies = (
 			);
 			name = CalorieTrackingApp;
+			packageProductDependencies = (
+				45DEB6B22B9882FE009B24A1 /* KeychainSwift */,
+			);
 			productName = CalorieTrackingApp;
 			productReference = 4579AF322B7B72A800372142 /* CalorieTrackingApp.app */;
 			productType = "com.apple.product-type.application";
@@ -365,6 +390,9 @@
 				Base,
 			);
 			mainGroup = 4579AF292B7B72A800372142;
+			packageReferences = (
+				45DEB6B12B9882FE009B24A1 /* XCRemoteSwiftPackageReference "keychain-swift" */,
+			);
 			productRefGroup = 4579AF332B7B72A800372142 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -412,20 +440,23 @@
 				4512E8512B8CF2F300B9D900 /* NutritionalSummaryView.swift in Sources */,
 				4579AF3A2B7B72A800372142 /* DiaryViewController.swift in Sources */,
 				45DEB6A42B971BEF009B24A1 /* EdamamFood.swift in Sources */,
-				45DEB6A82B978765009B24A1 /* LoginViewController.swift in Sources */,
+				45DEB6A82B978765009B24A1 /* SigninViewController.swift in Sources */,
 				4512E83F2B85EF5400B9D900 /* FoodInput.swift in Sources */,
 				4579AF7C2B7D25CC00372142 /* Food+CoreDataClass.swift in Sources */,
 				4579AF762B7D21CB00372142 /* CustomFoodsViewController.swift in Sources */,
 				4512E8452B8CE53D00B9D900 /* MealView.swift in Sources */,
 				4512E84D2B8CE96200B9D900 /* FoodEntry+CoreDataProperties.swift in Sources */,
+				45DEB6AC2B9871D4009B24A1 /* SignupViewController.swift in Sources */,
 				4512E84C2B8CE96200B9D900 /* FoodEntry+CoreDataClass.swift in Sources */,
+				45DEB6B62B988380009B24A1 /* APITokenResponse.swift in Sources */,
 				4579AF7F2B7E6CCD00372142 /* AddFoodViewController.swift in Sources */,
 				4512E8472B8CE54E00B9D900 /* MealViewController.swift in Sources */,
 				4579AF742B7D21AC00372142 /* CustomFoodsView.swift in Sources */,
 				4579AF812B7E6E5F00372142 /* AddFoodView.swift in Sources */,
 				45DEB69E2B960BC7009B24A1 /* DatePickerViewController.swift in Sources */,
 				4579AF362B7B72A800372142 /* AppDelegate.swift in Sources */,
-				45DEB6AA2B978AAB009B24A1 /* LoginView.swift in Sources */,
+				45DEB6B02B987491009B24A1 /* AuthManager.swift in Sources */,
+				45DEB6AA2B978AAB009B24A1 /* SigninView.swift in Sources */,
 				4512E84F2B8CE96200B9D900 /* Meal+CoreDataProperties.swift in Sources */,
 				4579AF6C2B7B7F5C00372142 /* MainTabBarController.swift in Sources */,
 				4512E84E2B8CE96200B9D900 /* Meal+CoreDataClass.swift in Sources */,
@@ -434,6 +465,7 @@
 				4512E8432B891B5A00B9D900 /* MealBarView.swift in Sources */,
 				4579AF702B7CEE8900372142 /* TrackButtonView.swift in Sources */,
 				45DEB6A62B971D9E009B24A1 /* NetworkManager.swift in Sources */,
+				45DEB6AE2B9871E7009B24A1 /* SignupView.swift in Sources */,
 				4579AF382B7B72A800372142 /* SceneDelegate.swift in Sources */,
 				4512E8412B88E3E000B9D900 /* DiaryView.swift in Sources */,
 				4579AF7D2B7D25CC00372142 /* Food+CoreDataProperties.swift in Sources */,
@@ -767,6 +799,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		45DEB6B12B9882FE009B24A1 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 21.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		45DEB6B22B9882FE009B24A1 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45DEB6B12B9882FE009B24A1 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		4579AF772B7D221C00372142 /* CalorieTrackingApp.xcdatamodeld */ = {

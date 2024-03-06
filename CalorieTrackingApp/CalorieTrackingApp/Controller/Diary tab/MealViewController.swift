@@ -298,13 +298,16 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
             print("Could not fetch. Error: \(error), \(error.userInfo)")
         }
         
-        NetworkManager.fetchFoodItems(for: searchText) { [weak self] edamamItems in
-            guard let self = self, let edamamItems = edamamItems else { return }
-            
-            let apiFoods = edamamItems.map { FoodItem.remote($0) }
-            self.filteredFoods += apiFoods
-            self.contentView.reloadTableViewData()
+        if AuthManager.shared.isLoggedIn() {
+            NetworkManager.fetchFoodFromEdamam(for: searchText) { [weak self] edamamItems in
+                guard let self = self, let edamamItems = edamamItems else { return }
+                
+                let apiFoods = edamamItems.map { FoodItem.remote($0) }
+                self.filteredFoods += apiFoods
+                self.contentView.reloadTableViewData()
+            }
         }
+        self.contentView.reloadTableViewData()
     }
     
     func willPresentSearchController(_ searchController: UISearchController) {

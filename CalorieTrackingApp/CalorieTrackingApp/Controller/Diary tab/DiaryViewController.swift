@@ -27,9 +27,10 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         self.title = "Diary"
         
-        let rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle"), style: .plain, target: self, action: #selector(accountButtonTapped))
+        let accountImage = AuthManager.shared.isLoggedIn() ? UIImage(systemName: "person.crop.circle.badge.checkmark") : UIImage(systemName: "person.crop.circle")
+        let rightBarButtonItem = UIBarButtonItem(image: accountImage, style: .plain, target: self, action: #selector(accountButtonTapped))
         self.navigationItem.rightBarButtonItem = rightBarButtonItem
-        self.navigationItem.rightBarButtonItem?.tintColor = .systemOrange
+        self.navigationItem.rightBarButtonItem?.tintColor = .black
         self.navigationController?.navigationBar.tintColor = .systemOrange
         
         setupContentView()
@@ -39,6 +40,10 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        let accountImage = AuthManager.shared.isLoggedIn() ? UIImage(systemName: "person.crop.circle.badge.checkmark") : UIImage(systemName: "person.crop.circle")
+        self.navigationItem.rightBarButtonItem?.image = accountImage
+        
         if let tabBar = self.tabBarController as? MainTabBarController {
             tabBar.trackButtonView.isHidden = false
         }
@@ -77,13 +82,13 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
     }
     
     @objc func accountButtonTapped() {
-        let loginVC = LoginViewController()
-        loginVC.hidesBottomBarWhenPushed = true
+        let signinVC = SigninViewController()
+        signinVC.hidesBottomBarWhenPushed = true
         if let tabBar = self.tabBarController as? MainTabBarController {
             tabBar.trackButtonView.isHidden = true
         }
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.pushViewController(loginVC, animated: true)
+        self.navigationController?.pushViewController(signinVC, animated: true)
     }
     
     private func fetchOrCreateMeal(name mealName: String, date: Date) -> Meal? {
