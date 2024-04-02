@@ -17,6 +17,7 @@ class MealViewController: UIViewController {
     private enum FoodItem {
         case local(Food) // local (Core Data) food
         case remote(EdamamItem) // remote (Edamam API) food
+        case customMeal(CustomMeal) // remote (Edamam API) food
     }
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -29,6 +30,10 @@ class MealViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func getMeal() -> Meal {
+        return self.meal
     }
     
     override func viewDidLoad() {
@@ -57,16 +62,41 @@ class MealViewController: UIViewController {
         contentView.setTableViewDelegate(self)
         contentView.setTableViewDataSource(self)
         contentView.registerTableViewCell(cellClass: FoodTableViewCell.self, forCellReuseIdentifier: "FoodCell")
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(deactivateSearch), name: .deactivateSearchController, object: nil)
         updateNutritionSummaryInfo()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         if hasFoodEntries {
             contentView.updatePlaceholderVisibility(show: false)
             contentView.updateTableViewTopConstraint(isSearching: false)
+            contentView.updateTableLabelVsibility(show: true)
+        } else {
+            contentView.updateTableLabelVsibility(show: false)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if isSearching {
+            contentView.updateTableViewTopConstraint(isSearching: true)
+        } else {
+            if let tabBarVC = self.tabBarController as? MainTabBarController {
+                UIView.animate(withDuration: 0.03, delay: 0.01, animations: {
+                    tabBarVC.trackButtonView.alpha = 1.0
+                }) { _ in
+                    tabBarVC.trackButtonView.isHidden = false
+                    tabBarVC.trackButtonView.setButtonEnabled(true)
+                    tabBarVC.trackButtonView.shouldAcceptTouches = true
+                }
+            }
+            contentView.reloadTableViewData()
+        }
+
+    }
+    
+    func activateSearch() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.searchController.isActive = true
+            self.searchController.searchBar.becomeFirstResponder()
         }
     }
     
@@ -83,7 +113,14 @@ class MealViewController: UIViewController {
         newFoodEntry.food = food
         newFoodEntry.meal = meal
         newFoodEntry.servingsize = 1
-        newFoodEntry.servingunit = "\(food.wrappedServing) (\(food.size) \(food.wrappedPerServing))"
+        
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        formatter.numberStyle = .decimal
+        let sizeText = formatter.string(from: NSNumber(value: food.size)) ?? "1"
+        newFoodEntry.servingunit = "\(food.wrappedServing)"
+        
         newFoodEntry.kcal = food.kcal
         newFoodEntry.carbs = food.carbs
         newFoodEntry.protein = food.protein
@@ -148,65 +185,111 @@ class MealViewController: UIViewController {
         }
     }
     
+    private func trackCustomMeal(_ customMeal: CustomMeal) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        let newFoodEntry = FoodEntry(context: managedContext)
+        newFoodEntry.id = UUID()
+        newFoodEntry.custommeal = customMeal
+        newFoodEntry.meal = meal
+        newFoodEntry.servingsize = customMeal.size
+        newFoodEntry.servingunit = "Serving"
+        newFoodEntry.kcal = customMeal.kcal
+        newFoodEntry.carbs = customMeal.carbs
+        newFoodEntry.protein = customMeal.protein
+        newFoodEntry.fat = customMeal.fat
+        
+        customMeal.addToFoodentry(newFoodEntry)
+        
+        meal.kcal += customMeal.kcal
+        meal.carbs += customMeal.carbs
+        meal.fat += customMeal.fat
+        meal.protein += customMeal.protein
+        meal.addToFoodentry(newFoodEntry)
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Error saving food: \(error)")
+        }
+    }
+    
     private func deleteFood(at indexPath: IndexPath) {
+        
+        guard let id = meal.foodEntryArray[indexPath.row].id else {
+            return
+        }
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedContext = appDelegate.persistentContainer.viewContext
 
-        let foodEntryToDelete = meal.foodEntryArray[indexPath.row]
-
-        meal.kcal -= foodEntryToDelete.kcal
-        meal.carbs -= foodEntryToDelete.carbs
-        meal.fat -= foodEntryToDelete.fat
-        meal.protein -= foodEntryToDelete.protein
-        
-        // to ensure values are not very small because of Double precision issues (values can become as small as -2.842170943040401e-14 and so on)
-        let tolerance: Double = 1e-10
-        meal.kcal = abs(meal.kcal) < tolerance ? 0 : meal.kcal
-        meal.carbs = abs(meal.carbs) < tolerance ? 0 : meal.carbs
-        meal.protein = abs(meal.protein) < tolerance ? 0 : meal.protein
-        meal.fat = abs(meal.fat) < tolerance ? 0 : meal.fat
-
-        foodEntryToDelete.food?.removeFromFoodentry(foodEntryToDelete)
-        managedContext.delete(foodEntryToDelete)
-
-        meal.removeFromFoodentry(foodEntryToDelete)
-
-        do {
-            try managedContext.save()
-        } catch let error as NSError {
-            print("Error saving after deleting food: \(error), \(error.userInfo)")
+        if let indexToDelete = meal.foodEntryArray.firstIndex(where: { $0.id == id }) {
+            let foodEntryToDelete = meal.foodEntryArray[indexToDelete]
+            
+            meal.kcal -= foodEntryToDelete.kcal
+            meal.carbs -= foodEntryToDelete.carbs
+            meal.fat -= foodEntryToDelete.fat
+            meal.protein -= foodEntryToDelete.protein
+            
+            // to ensure values are not very small because of Double precision issues (values can become as small as -2.842170943040401e-14 and so on)
+            let tolerance: Double = 1e-10
+            meal.kcal = abs(meal.kcal) < tolerance ? 0 : meal.kcal
+            meal.carbs = abs(meal.carbs) < tolerance ? 0 : meal.carbs
+            meal.protein = abs(meal.protein) < tolerance ? 0 : meal.protein
+            meal.fat = abs(meal.fat) < tolerance ? 0 : meal.fat
+            
+            foodEntryToDelete.food?.removeFromFoodentry(foodEntryToDelete)
+            foodEntryToDelete.custommeal?.removeFromFoodentry(foodEntryToDelete)
+            managedContext.delete(foodEntryToDelete)
+            
+            meal.removeFromFoodentry(foodEntryToDelete)
+            
+            do {
+                try managedContext.save()
+            } catch let error as NSError {
+                print("Error saving after deleting food: \(error), \(error.userInfo)")
+            }
         }
     }
     
     private func updateNutritionSummaryInfo() {
-        let totalWeight = meal.protein + meal.carbs + meal.fat
-        let proteinPercentage = totalWeight > 0.01 ? (meal.protein / totalWeight) * 100 : 0
-        let carbsPercentage = totalWeight > 0.01 ? (meal.carbs / totalWeight) * 100 : 0
-        let fatPercentage = totalWeight > 0.01 ? (meal.fat / totalWeight) * 100 : 0
-        
-        let proteinValue = "(\(String(format: "%.1f", proteinPercentage))%) - \(String(format: "%.1f", meal.protein))g"
-        let carbsValue = "(\(String(format: "%.1f", carbsPercentage))%) - \(String(format: "%.1f", meal.carbs))g"
-        let fatValue = "(\(String(format: "%.1f", fatPercentage))%) - \(String(format: "%.1f", meal.fat))g"
-        
         contentView.updateNutritionSummaryInfo(
-            kcal: String(format: "%.0f", meal.kcal),
-            protein: proteinValue,
-            carbs: carbsValue,
-            fat: fatValue
+            kcal: meal.kcal,
+            protein: meal.protein,
+            carbs: meal.carbs,
+            fat: meal.fat
         )
     }
     
     private var hasFoodEntries: Bool {
         return !meal.foodEntryArray.isEmpty
     }
+    
+    private func openLocalFoodDetailView(with food: Food) {
+        let detailVC = FoodDetailViewController(meal: meal, food: food)
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+
+    private func openRemoteFoodDetailView(with food: EdamamItem) {
+//        let detailVC = LocalFoodDetailViewController()
+//        detailVC.food = food
+//        navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
+    private func openCustomMealDetailView(with customMeal: CustomMeal) {
+        let detailVC = CustomMealDetailViewController(meal: meal, customMeal: customMeal)
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
+    @objc private func deactivateSearch() {
+        self.searchController.isActive = false
+        self.updateNutritionSummaryInfo()
+    }
 }
-
-
-
-
-
-
-
 
 extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -243,10 +326,19 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
                     self.searchController.isActive = false
                     self.contentView.reloadTableViewData()
                 }
+            case .customMeal(let customMealItem):
+                cell.setupCustomMealCell(with: customMealItem, showActionButton: true)
+                cell.onActionButtonPressed = { [weak self] in
+                    guard let self = self else { return }
+                    self.trackCustomMeal(customMealItem)
+                    self.updateNutritionSummaryInfo()
+                    self.searchController.isActive = false
+                    self.contentView.reloadTableViewData()
+                }
             }
         } else if hasFoodEntries {
             let foodEntry = meal.foodEntryArray[indexPath.row]
-            cell.setupLocalFoodCell(with: foodEntry.food!, showActionButton: false)
+            cell.setupFoodEntryCell(with: foodEntry)
         }
         return cell
     }
@@ -263,13 +355,49 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
             DispatchQueue.main.async {
                 if tableView.numberOfRows(inSection: indexPath.section) == 0 {
                     self.contentView.updatePlaceholderVisibility(show: true)
+                    self.contentView.updateTableLabelVsibility(show: false)
                 }
             }
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // for later tap implementation
+        tableView.deselectRow(at: indexPath, animated: true)
+            
+        if isSearching {
+            switch filteredFoods[indexPath.row] {
+            case .local(let food):
+                openLocalFoodDetailView(with: food)
+            case .remote(let edamamItem):
+                openRemoteFoodDetailView(with: edamamItem)
+            case .customMeal(let customMealItem):
+                openCustomMealDetailView(with: customMealItem)
+            }
+        } else {
+            if let tabBarVC = self.tabBarController as? MainTabBarController {
+                UIView.animate(withDuration: 0.03, delay: 0.01, animations: {
+                    tabBarVC.trackButtonView.alpha = 0.0
+                }) { _ in
+                    tabBarVC.trackButtonView.isHidden = true
+                    tabBarVC.trackButtonView.setButtonEnabled(false)
+                    tabBarVC.trackButtonView.shouldAcceptTouches = false
+                }
+            }
+            
+            let selectedEntry = meal.foodEntryArray[indexPath.row]
+
+                if let food = selectedEntry.food {
+                    let detailVC = FoodDetailViewController(meal: meal, food: food, foodEntry: selectedEntry)
+                    detailVC.hidesBottomBarWhenPushed = true
+                    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+                    navigationController?.pushViewController(detailVC, animated: true)
+                } else if let customMeal = selectedEntry.custommeal {
+                    let customMealDetailVC = CustomMealDetailViewController(meal: meal, customMeal: customMeal, foodEntry: selectedEntry)
+                    customMealDetailVC.hidesBottomBarWhenPushed = true
+                    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+                    navigationController?.pushViewController(customMealDetailVC, animated: true)
+                }
+        }
     }
     
     func updateSearchResults(for searchController: UISearchController) {
@@ -285,7 +413,7 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
         })
     }
     
-    private func filterContentForSearchText(_ searchText: String) {
+    func filterContentForSearchText(_ searchText: String) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedContext = appDelegate.persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
@@ -296,6 +424,15 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
             self.filteredFoods = localFoods.map { .local($0) }
         } catch let error as NSError {
             print("Could not fetch. Error: \(error), \(error.userInfo)")
+        }
+        
+        let mealFetchRequest: NSFetchRequest<CustomMeal> = CustomMeal.fetchRequest()
+        mealFetchRequest.predicate = NSPredicate(format: "name CONTAINS[c] %@ AND wasDeleted == FALSE", searchText)
+        do {
+            let customMeals = try managedContext.fetch(mealFetchRequest)
+            self.filteredFoods += customMeals.map { FoodItem.customMeal($0) }
+        } catch let error as NSError {
+            print("Could not fetch CustomMeal. Error: \(error), \(error.userInfo)")
         }
         
         if AuthManager.shared.isLoggedIn() {
@@ -320,6 +457,7 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
         contentView.updateTableViewTopConstraint(isSearching: true)
         contentView.updatePlaceholderVisibility(show: false)
         contentView.updateNutritionalInfoVisibility(show: false)
+        contentView.updateTableLabelVsibility(show: false)
     }
 
     func didPresentSearchController(_ searchController: UISearchController) {
@@ -331,6 +469,7 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
             tabBar.tabBar.isHidden = false
             tabBar.trackButtonView.isHidden = false
         }
+
         contentView.showTableView(true)
     }
     
@@ -339,10 +478,18 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
         
         if !hasFoodEntries {
             contentView.updatePlaceholderVisibility(show: true)
+            contentView.updateTableLabelVsibility(show: false)
+            print("reaches")
         } else {
             contentView.updateTableViewTopConstraint(isSearching: false)
             contentView.updatePlaceholderVisibility(show: false)
+            contentView.updateTableLabelVsibility(show: true)
         }
+        print("reaches2")
         contentView.updateNutritionalInfoVisibility(show: true)
     }
+}
+
+extension Notification.Name {
+    static let deactivateSearchController = Notification.Name("deactivateSearchController")
 }

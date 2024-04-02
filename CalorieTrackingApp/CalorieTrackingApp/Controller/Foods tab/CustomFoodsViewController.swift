@@ -130,7 +130,19 @@ extension CustomFoodsViewController: UITableViewDelegate, UITableViewDataSource,
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // for later tap implementation
+        var selectedFood: Food
+        if isSearching() {
+            selectedFood = filteredFoods[indexPath.row]
+        } else {
+            selectedFood = foods[indexPath.row]
+        }
+        
+        let manageFoodVC = AddFoodViewController()
+        manageFoodVC.mode = .update(selectedFood)
+        let navController = UINavigationController(rootViewController: manageFoodVC)
+        navController.modalPresentationStyle = .fullScreen
+        
+        self.present(navController, animated: true, completion: nil)
     }
     
     func updateSearchResults(for searchController: UISearchController) {

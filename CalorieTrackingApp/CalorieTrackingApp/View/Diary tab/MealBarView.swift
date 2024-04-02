@@ -24,7 +24,7 @@ class MealBarView: UIView {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        backgroundColor = Constants.mainColor
         setupView()
         setupGestureRecognizers()
     }
@@ -34,6 +34,12 @@ class MealBarView: UIView {
         mealBarView.isUserInteractionEnabled = true
         mealBarView.backgroundColor = .white
         addSubview(mealBarView)
+        
+        mealBarView.layer.shadowColor = UIColor.black.cgColor
+        mealBarView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        mealBarView.layer.shadowOpacity = 0.06
+        mealBarView.layer.shadowRadius = 6
+
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         mealBarView.addSubview(imageView)
@@ -93,9 +99,11 @@ class MealBarView: UIView {
         imageView.image = image
     }
     
-    func updateKcalLabel(with count: Int) {
+    func updateKcalLabel(with count: Double) {
+        let kcalValue = "\(String(format: "%.0f", count))"
+
         DispatchQueue.main.async {
-            self.kcalValueLabel.text = "\(count)"
+            self.kcalValueLabel.text = kcalValue
         }
     }
     

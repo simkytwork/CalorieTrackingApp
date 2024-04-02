@@ -12,7 +12,7 @@ class SigninViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        view.backgroundColor = Constants.backgroundColor
         
         self.title = "Account"
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))

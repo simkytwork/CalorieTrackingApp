@@ -50,7 +50,7 @@ class AddFoodView: UIView {
     }
     
     private func setupForm() {
-        backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        backgroundColor = Constants.backgroundColor
         stackView.axis = .vertical
         stackView.spacing = 10
         addSubview(stackView)
@@ -352,6 +352,21 @@ class AddFoodView: UIView {
         additionalServingContentLabel.text = text
     }
     
+    func populateFieldsWithFoodData(_ foodData: FoodData) {
+        addButton.setTitle("Update", for: .normal)
+        
+        nameTextField.text = foodData.name
+        brandTextField.text = foodData.brand
+        categoryButton.setTitle(foodData.category, for: .normal)
+        servingTypeButton.setTitle(foodData.servingType, for: .normal)
+        servingContentButton.setTitle(foodData.servingContent, for: .normal)
+        servingTextField.text = foodData.servingSize
+        kcalTextField.text = foodData.kcal
+        carbsTextField.text = foodData.carbs
+        proteinTextField.text = foodData.protein
+        fatTextField.text = foodData.fat
+    }
+    
     private func setupAddButton() {
         addButton.backgroundColor = .systemGreen
         addButton.setTitle("Add", for: .normal)
@@ -361,14 +376,6 @@ class AddFoodView: UIView {
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         stackView.addArrangedSubview(addButton)
-//
-//        addButton.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-//            addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-//            addButton.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: 100),
-//            addButton.heightAnchor.constraint(equalToConstant: 50)
-//        ])
     }
     
     func setTextFieldDelegates(_ delegate: UITextFieldDelegate) {

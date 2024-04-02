@@ -24,7 +24,7 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        view.backgroundColor = Constants.backgroundColor
         self.title = "Diary"
         
         let accountImage = AuthManager.shared.isLoggedIn() ? UIImage(systemName: "person.crop.circle.badge.checkmark") : UIImage(systemName: "person.crop.circle")
@@ -44,9 +44,16 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         let accountImage = AuthManager.shared.isLoggedIn() ? UIImage(systemName: "person.crop.circle.badge.checkmark") : UIImage(systemName: "person.crop.circle")
         self.navigationItem.rightBarButtonItem?.image = accountImage
         
-        if let tabBar = self.tabBarController as? MainTabBarController {
-            tabBar.trackButtonView.isHidden = false
+        if let tabBarVC = self.tabBarController as? MainTabBarController {
+            UIView.animate(withDuration: 0.03, delay: 0.01, animations: {
+                tabBarVC.trackButtonView.alpha = 1.0
+            }) { _ in
+                tabBarVC.trackButtonView.isHidden = false
+                tabBarVC.trackButtonView.setButtonEnabled(true)
+                tabBarVC.trackButtonView.shouldAcceptTouches = true
+            }
         }
+        
         fetchAllMealsInfo()
     }
     
@@ -75,7 +82,7 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         }
         
         contentView.mealBarTapped = { [weak self] mealName in
-            guard let self = self, let meal = self.fetchOrCreateMeal(name: mealName, date: self.selectedDate) else { return }
+            guard let self = self, let meal = MealManager.shared.fetchOrCreateMeal(name: mealName, date: self.selectedDate) else { return }
             let mealViewController = MealViewController(meal: meal)
             self.navigationController?.pushViewController(mealViewController, animated: true)
         }
@@ -91,35 +98,35 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         self.navigationController?.pushViewController(signinVC, animated: true)
     }
     
-    private func fetchOrCreateMeal(name mealName: String, date: Date) -> Meal? {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest: NSFetchRequest<Meal> = Meal.fetchRequest()
-        
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.year, .month, .day], from: date)
-        guard let dateOnly = calendar.date(from: components) else { return nil }
-        
-        fetchRequest.predicate = NSPredicate(format: "type == %@ AND date == %@", mealName, dateOnly as NSDate)
-        fetchRequest.fetchLimit = 1
-        
-        do {
-            if let existingMeal = try managedContext.fetch(fetchRequest).first {
-                return existingMeal
-            } else {
-                let newMeal = Meal(context: managedContext)
-                newMeal.type = mealName
-                newMeal.date = dateOnly
-                
-                try managedContext.save()
-                return newMeal
-            }
-        } catch let error as NSError {
-            print("Could not fetch or create a new meal: \(error), \(error.userInfo)")
-            return nil
-        }
-    }
+//    func fetchOrCreateMeal(name mealName: String, date: Date) -> Meal? {
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        let managedContext = appDelegate.persistentContainer.viewContext
+//        
+//        let fetchRequest: NSFetchRequest<Meal> = Meal.fetchRequest()
+//        
+//        let calendar = Calendar.current
+//        let components = calendar.dateComponents([.year, .month, .day], from: date)
+//        guard let dateOnly = calendar.date(from: components) else { return nil }
+//        
+//        fetchRequest.predicate = NSPredicate(format: "type == %@ AND date == %@", mealName, dateOnly as NSDate)
+//        fetchRequest.fetchLimit = 1
+//        
+//        do {
+//            if let existingMeal = try managedContext.fetch(fetchRequest).first {
+//                return existingMeal
+//            } else {
+//                let newMeal = Meal(context: managedContext)
+//                newMeal.type = mealName
+//                newMeal.date = dateOnly
+//                
+//                try managedContext.save()
+//                return newMeal
+//            }
+//        } catch let error as NSError {
+//            print("Could not fetch or create a new meal: \(error), \(error.userInfo)")
+//            return nil
+//        }
+//    }
     
     private func fetchAllMealsInfo() {
         let mealTypes = Constants.mealNames
@@ -130,13 +137,13 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
         fat = 0.0
         
         mealTypes.forEach { mealType in
-            if let meal = fetchOrCreateMeal(name: mealType, date: selectedDate) {
+            if let meal = MealManager.shared.fetchOrCreateMeal(name: mealType, date: selectedDate) {
                 kcal += meal.kcal
                 protein += meal.protein
                 carbs += meal.carbs
                 fat += meal.fat
                 
-                self.contentView.updateKcalValue(forMealName: mealType, withKcal: Int(meal.kcal))
+                self.contentView.updateKcalValue(forMealName: mealType, withKcal: meal.kcal)
             }
         }
         
@@ -144,20 +151,11 @@ class DiaryViewController: UIViewController, UIPopoverPresentationControllerDele
     }
     
     func updateNutritionSummaryInfo() {
-        let totalWeight = protein + carbs + fat
-        let proteinPercentage = totalWeight > 0 ? (protein / totalWeight) * 100 : 0
-        let carbsPercentage = totalWeight > 0 ? (carbs / totalWeight) * 100 : 0
-        let fatPercentage = totalWeight > 0 ? (fat / totalWeight) * 100 : 0
-        
-        let proteinValue = "(\(String(format: "%.1f", proteinPercentage))%) - \(String(format: "%.1f", protein))g"
-        let carbsValue = "(\(String(format: "%.1f", carbsPercentage))%) - \(String(format: "%.1f", carbs))g"
-        let fatValue = "(\(String(format: "%.1f", fatPercentage))%) - \(String(format: "%.1f", fat))g"
-        
         contentView.updateNutritionSummaryInfo(
-            kcal: String(format: "%.0f", kcal),
-            protein: proteinValue,
-            carbs: carbsValue,
-            fat: fatValue
+            kcal: kcal,
+            protein: protein,
+            carbs: carbs,
+            fat: fat
         )
     }
     

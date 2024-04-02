@@ -14,20 +14,21 @@ class MealView: UIView {
     private let placeholderLabel = UILabel()
     private let placeholderImageView = UIImageView()
     
+    private let tableLabel = UILabel()
     private let tableView = UITableView()
     private var tableViewTopConstraint: NSLayoutConstraint?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupTableView()
         setupNutritionalInfo()
+        setupTableView()
         setupPlaceholderLabel()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupTableView()
         setupNutritionalInfo()
+        setupTableView()
         setupPlaceholderLabel()
     }
     
@@ -35,13 +36,25 @@ class MealView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tableView)
         
-        backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        tableLabel.translatesAutoresizingMaskIntoConstraints = false
+        tableLabel.text = "YOU HAVE TRACKED"
+        tableLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        tableLabel.textColor = Constants.textColor
+        addSubview(tableLabel)
+        
+        NSLayoutConstraint.activate([
+            tableLabel.topAnchor.constraint(equalTo: nutritionSummaryView.bottomAnchor, constant: 35),
+            tableLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            tableLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+        ])
+        
+        backgroundColor = Constants.backgroundColor
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 87
-        tableView.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
-        tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: topAnchor)
-        
+        tableView.backgroundColor = Constants.backgroundColor
+        tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: tableLabel.bottomAnchor, constant: 10)
+
         NSLayoutConstraint.activate([
             tableViewTopConstraint!,
             tableView.leftAnchor.constraint(equalTo: leftAnchor),
@@ -56,7 +69,7 @@ class MealView: UIView {
         if isSearching {
             tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: topAnchor)
         } else {
-            tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: nutritionSummaryView.bottomAnchor, constant: 20)
+            tableViewTopConstraint = tableView.topAnchor.constraint(equalTo: tableLabel.bottomAnchor, constant: 20)
         }
         
         tableViewTopConstraint?.isActive = true
@@ -117,6 +130,10 @@ class MealView: UIView {
         ])
     }
     
+    func updateTableLabelVsibility(show: Bool) {
+        tableLabel.isHidden = !show
+    }
+    
     func updatePlaceholderVisibility(show: Bool) {
         placeholderLabel.isHidden = !show
         placeholderImageView.isHidden = !show
@@ -127,7 +144,7 @@ class MealView: UIView {
         nutritionSummaryView.isHidden = !show
     }
     
-    func updateNutritionSummaryInfo(kcal: String, protein: String, carbs: String, fat: String) {
+    func updateNutritionSummaryInfo(kcal: Double, protein: Double, carbs: Double, fat: Double) {
         nutritionSummaryView.updateNutritionValues(kcal: kcal, protein: protein, carbs: carbs, fat: fat)
     }
     

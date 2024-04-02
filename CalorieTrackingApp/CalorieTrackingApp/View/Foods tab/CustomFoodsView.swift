@@ -32,7 +32,7 @@ class CustomFoodsView: UIView {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 87
-        tableView.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
+        tableView.backgroundColor = Constants.backgroundColor
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: topAnchor),
@@ -46,7 +46,7 @@ class CustomFoodsView: UIView {
         placeholderBackgroundView.layer.cornerRadius = 6
         placeholderBackgroundView.layer.borderColor = UIColor.systemGray5.cgColor
         placeholderBackgroundView.layer.borderWidth = 0.5
-        placeholderBackgroundView.backgroundColor = .white
+        placeholderBackgroundView.backgroundColor = Constants.mainColor
         placeholderBackgroundView.layer.masksToBounds = false
         placeholderBackgroundView.layer.shadowColor = UIColor.black.cgColor
         placeholderBackgroundView.layer.shadowOpacity = 0.05
@@ -140,13 +140,13 @@ class FoodTableViewCell: UITableViewCell {
         stackView.layer.cornerRadius = 6
         stackView.layer.borderColor = UIColor.systemGray6.cgColor
         stackView.layer.borderWidth = 0.5
-        stackView.backgroundColor = .white
+        stackView.backgroundColor = Constants.mainColor
         stackView.layer.masksToBounds = false
         stackView.layer.shadowColor = UIColor.black.cgColor
         stackView.layer.shadowOpacity = 0.05
-        stackView.layer.shadowOffset = CGSize(width: 0, height: 1)
-        stackView.layer.shadowRadius = 1
-        
+        stackView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        stackView.layer.shadowRadius = 2
+    
         contentView.addSubview(stackView)
         
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -214,7 +214,7 @@ class FoodTableViewCell: UITableViewCell {
         ]
         
         actionButton.frame.size = CGSize(width: 40, height: 40)
-        actionButton.backgroundColor = .systemOrange
+        actionButton.backgroundColor = Constants.accentColor
         actionButton.layer.cornerRadius = actionButton.frame.height / 2
         actionButton.setImage(UIImage(systemName: "plus"), for: .normal)
         actionButton.tintColor = .white
@@ -228,16 +228,28 @@ class FoodTableViewCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
-        stackView.backgroundColor = highlighted ? UIColor.systemOrange : .white
+        stackView.backgroundColor = highlighted ? Constants.accentColor : .white
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        actionButton.isHidden = true
+    }
+    
     func setupLocalFoodCell(with food: Food, showActionButton: Bool) {
-        nameLabel.text = food.name
-        nameLabel.font = .boldSystemFont(ofSize: 15)
+        let mealName = food.wrappedName
+        let mealText = " • Food"
+
+        let attributedString = NSMutableAttributedString(string: mealName, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15)])
+
+        let regularText = NSAttributedString(string: mealText, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        attributedString.append(regularText)
+        
+        nameLabel.attributedText = attributedString
         nameLabel.numberOfLines = 0
         nameLabel.lineBreakMode = .byWordWrapping
         
@@ -263,8 +275,15 @@ class FoodTableViewCell: UITableViewCell {
     }
     
     func setupEdamamFoodCell(with food: EdamamItem, showActionButton: Bool) {
-        nameLabel.text = food.label
-        nameLabel.font = .boldSystemFont(ofSize: 15)
+        let mealName = food.label
+        let mealText = " • Food"
+
+        let attributedString = NSMutableAttributedString(string: mealName, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15)])
+
+        let regularText = NSAttributedString(string: mealText, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        attributedString.append(regularText)
+
+        nameLabel.attributedText = attributedString
         nameLabel.numberOfLines = 0
         nameLabel.lineBreakMode = .byWordWrapping
         
@@ -285,6 +304,77 @@ class FoodTableViewCell: UITableViewCell {
         } else {
             NSLayoutConstraint.deactivate(actionButtonConstraints)
         }
+        
+        contentView.layoutIfNeeded()
+    }
+    
+    func setupCustomMealCell(with customMeal: CustomMeal, showActionButton: Bool) {
+        
+        let mealName = customMeal.wrappedName
+        let mealText = " • Meal"
+
+        let attributedString = NSMutableAttributedString(string: mealName, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15)])
+
+        let regularText = NSAttributedString(string: mealText, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        attributedString.append(regularText)
+
+        nameLabel.attributedText = attributedString
+        nameLabel.numberOfLines = 0
+        nameLabel.lineBreakMode = .byWordWrapping
+        
+        kcalLabel.text = String(format: "%.0f", customMeal.kcal) + " kcal"
+        kcalLabel.font = .systemFont(ofSize: 13)
+
+        let sizeText = String(format: "%.0f", customMeal.size)
+
+        servingDetailsLabel.text = "\(sizeText) Serving"
+        servingDetailsLabel.font = .systemFont(ofSize: 13)
+        
+        actionButton.isHidden = !showActionButton
+        if showActionButton {
+            NSLayoutConstraint.activate(actionButtonConstraints)
+        } else {
+            NSLayoutConstraint.deactivate(actionButtonConstraints)
+        }
+        
+        contentView.layoutIfNeeded()
+    }
+    
+    func setupFoodEntryCell(with foodEntry: FoodEntry) {
+        var mealName: String = ""
+        var perservingText: String = ""
+        var mealText: String = ""
+        
+        if let food = foodEntry.food {
+            mealName = food.wrappedName
+            perservingText = food.wrappedPerServing
+            mealText = " • Food"
+        }
+        else if let customMeal = foodEntry.custommeal {
+            mealName = customMeal.wrappedName
+            perservingText = "Serving"
+            mealText = " • Meal"
+        }
+        
+        let attributedString = NSMutableAttributedString(string: mealName, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15)])
+        let regularText = NSAttributedString(string: mealText, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)])
+        attributedString.append(regularText)
+        
+        nameLabel.attributedText = attributedString
+        nameLabel.numberOfLines = 0
+        nameLabel.lineBreakMode = .byWordWrapping
+        
+        kcalLabel.text = String(format: "%.0f", foodEntry.kcal) + " kcal"
+        kcalLabel.font = .systemFont(ofSize: 13)
+        
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        formatter.numberStyle = .decimal
+        let sizeText = formatter.string(from: NSNumber(value: foodEntry.servingsize)) ?? "1"
+        
+        servingDetailsLabel.text = "\(sizeText) \(foodEntry.servingunit ?? "")"
+        servingDetailsLabel.font = .systemFont(ofSize: 13)
         
         contentView.layoutIfNeeded()
     }

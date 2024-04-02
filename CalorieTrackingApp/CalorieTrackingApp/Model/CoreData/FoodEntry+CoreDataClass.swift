@@ -2,7 +2,7 @@
 //  FoodEntry+CoreDataClass.swift
 //  CalorieTrackingApp
 //
-//  Created by Simonas Kytra on 26/02/2024.
+//  Created by Simonas Kytra on 16/02/2024.
 //
 //
 

@@ -20,17 +20,16 @@ class FoodsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let tabBarVC = self.tabBarController as? MainTabBarController {
-            UIView.animate(withDuration: 0.1, delay: 0.02) {
-                tabBarVC.trackButtonView.isHidden = false
-                tabBarVC.trackButtonView.alpha = 1.0
-            }
+            tabBarVC.trackButtonView.isHidden = false
+            tabBarVC.trackButtonView.alpha = 1.0
+            tabBarVC.trackButtonView.setButtonEnabled(true)
+            tabBarVC.trackButtonView.shouldAcceptTouches = true
         }
         fetchFoods()
     }
     
     private func setupFoodsView() {
         self.navigationItem.title = "Foods"
-        view.backgroundColor = UIColor(red: 249.0/255.0, green: 249.0/255.0, blue: 249.0/255.0, alpha: 1)
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(contentView)
@@ -45,6 +44,10 @@ class FoodsViewController: UIViewController {
         contentView.onCustomFoodsTapped = { [weak self] in
             self?.customFoodsTapped()
         }
+        
+        contentView.onCustomMealsTapped = { [weak self] in
+            self?.customMealsTapped()
+        }
     }
     
     private func fetchFoods() {
@@ -52,21 +55,27 @@ class FoodsViewController: UIViewController {
             return
         }
         
-        let fetchRequest = NSFetchRequest<Food>(entityName: "Food")
-        fetchRequest.predicate = NSPredicate(format: "wasDeleted == FALSE AND isFromDatabase == FALSE")
+        let customFoodsFetchRequest = NSFetchRequest<Food>(entityName: "Food")
+        customFoodsFetchRequest.predicate = NSPredicate(format: "wasDeleted == FALSE AND isFromDatabase == FALSE")
+        
+        let customMealsFetchRequest = NSFetchRequest<CustomMeal>(entityName: "CustomMeal")
+        customMealsFetchRequest.predicate = NSPredicate(format: "wasDeleted == FALSE")
         
         do {
-            let count = try context.count(for: fetchRequest)
+            let foodsCount = try context.count(for: customFoodsFetchRequest)
+            let customMealsCount = try context.count(for: customMealsFetchRequest)
             DispatchQueue.main.async {
-                self.updateUI(with: count)
+                self.updateUI(with: foodsCount, and: customMealsCount)
             }
         } catch {
             print("Failed to fetch foods: \(error)")
         }
     }
     
-    private func updateUI(with count: Int) {
-        contentView.updateCountLabel(with: count)
+    private func updateUI(with foodsCount: Int, and customMealsCount: Int) {
+        contentView.updateCountLabel(with: foodsCount)
+        contentView.updateCustomMealsCountLabel(with: customMealsCount)
+
     }
     
     private func customFoodsTapped() {
@@ -75,6 +84,8 @@ class FoodsViewController: UIViewController {
                 tabBarVC.trackButtonView.alpha = 0.0
             }) { _ in
                 tabBarVC.trackButtonView.isHidden = true
+                tabBarVC.trackButtonView.setButtonEnabled(false)
+                tabBarVC.trackButtonView.shouldAcceptTouches = false
             }
         }
         
@@ -82,5 +93,22 @@ class FoodsViewController: UIViewController {
         customFoodsVC.hidesBottomBarWhenPushed = true
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(customFoodsVC, animated: true)
+    }
+    
+    private func customMealsTapped() {
+        if let tabBarVC = self.tabBarController as? MainTabBarController {
+            UIView.animate(withDuration: 0.03, delay: 0.01, animations: {
+                tabBarVC.trackButtonView.alpha = 0.0
+            }) { _ in
+                tabBarVC.trackButtonView.isHidden = true
+                tabBarVC.trackButtonView.setButtonEnabled(false)
+                tabBarVC.trackButtonView.shouldAcceptTouches = false
+            }
+        }
+        
+        let customMealsVC = CustomMealsViewController()
+        customMealsVC.hidesBottomBarWhenPushed = true
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationController?.pushViewController(customMealsVC, animated: true)
     }
 }
