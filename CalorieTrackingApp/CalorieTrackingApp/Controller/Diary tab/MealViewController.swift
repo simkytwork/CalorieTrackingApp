@@ -479,13 +479,12 @@ extension MealViewController: UITableViewDelegate, UITableViewDataSource, UISear
         if !hasFoodEntries {
             contentView.updatePlaceholderVisibility(show: true)
             contentView.updateTableLabelVsibility(show: false)
-            print("reaches")
         } else {
-            contentView.updateTableViewTopConstraint(isSearching: false)
             contentView.updatePlaceholderVisibility(show: false)
             contentView.updateTableLabelVsibility(show: true)
         }
-        print("reaches2")
+        
+        contentView.updateTableViewTopConstraint(isSearching: false)
         contentView.updateNutritionalInfoVisibility(show: true)
     }
 }

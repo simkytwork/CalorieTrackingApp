@@ -43,7 +43,7 @@ class DiaryView: UIView {
     
     private func setupDateLabel() {
         dateBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-        dateBackgroundView.backgroundColor = Constants.mainColor
+        dateBackgroundView.backgroundColor = Constants.backgroundColor
         addSubview(dateBackgroundView)
         sendSubviewToBack(dateBackgroundView)
         
@@ -51,14 +51,14 @@ class DiaryView: UIView {
             dateBackgroundView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             dateBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             dateBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            dateBackgroundView.heightAnchor.constraint(equalToConstant: 90)
+            dateBackgroundView.heightAnchor.constraint(equalToConstant: 60)
         ])
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(dateLabel)
         dateLabel.textAlignment = .center
         dateLabel.textColor = .black
-        dateLabel.font = UIFont.boldSystemFont(ofSize: 28)
+        dateLabel.font = UIFont.boldSystemFont(ofSize: 23)
         updateDateLabel(with: Date())
         
         let image = UIImage(named: "calendar")
@@ -69,7 +69,7 @@ class DiaryView: UIView {
         dayNameLabel.translatesAutoresizingMaskIntoConstraints = false
         dayNameLabel.textAlignment = .center
         dayNameLabel.textColor = .black
-        dayNameLabel.font = UIFont.systemFont(ofSize: 24)
+        dayNameLabel.font = UIFont.systemFont(ofSize: 19)
         addSubview(dayNameLabel)
         updateDayNameLabel(with: Date())
         
@@ -111,7 +111,7 @@ class DiaryView: UIView {
         nutritionSummaryView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            nutritionSummaryView.topAnchor.constraint(equalTo: dayNameLabel.bottomAnchor, constant: -5),
+            nutritionSummaryView.topAnchor.constraint(equalTo: dayNameLabel.bottomAnchor, constant: 20),
             nutritionSummaryView.leadingAnchor.constraint(equalTo: leadingAnchor),
             nutritionSummaryView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
